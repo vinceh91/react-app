@@ -2,7 +2,7 @@ import { useState } from "react";
 
 function ListGroup() {
   let items = ["New York", "San Fransisco", "Tokyo", "London"];
-  let [selectedIndex, setSelectedIndex] = useState(-1);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   return (
     <>
