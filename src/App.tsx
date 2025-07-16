@@ -1,18 +1,13 @@
 import { useState } from "react";
-import Button from "./components/Button";
+import Button from "./components/Button/Button";
 import DismissingAlert from "./components/DismissingAlert";
+import Like from "./components/Like";
+import Form from "./components/Form";
 
 function App() {
-  const [showAlert, setShowAlert] = useState(false);
-  const handleClick = () => {
-    setShowAlert(true);
-  };
   return (
     <div>
-      <Button onClick={handleClick}>Hello World</Button>
-      {showAlert && (
-        <DismissingAlert onClose={() => setShowAlert(false)}></DismissingAlert>
-      )}
+      <Form />
     </div>
   );
 }
