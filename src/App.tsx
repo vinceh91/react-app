@@ -5,8 +5,10 @@ import Like from "./components/Like";
 import Form from "./components/Form";
 import ExpenseList from "./expense-tracker/components/ExpenseList";
 import { Expense } from "./expense-tracker/components/ExpenseList";
+import ExpenseFilter from "./expense-tracker/components/ExpenseFilter";
 
 function App() {
+  const [category, setCategory] = useState("");
   const [expenses, setExpenses] = useState([
     { id: 1, description: "Burger", amount: 10, category: "Food" },
     { id: 2, description: "Phone", amount: 10, category: "Tech" },
@@ -15,9 +17,15 @@ function App() {
   const onDelete = (id: number) => {
     setExpenses(expenses.filter((expense) => expense.id !== id));
   };
+  const onSelectedCategory = (category: string) => setCategory(category);
+  const visibleExpenses = category
+    ? expenses.filter((e) => e.category === category)
+    : expenses;
+
   return (
     <div>
-      <ExpenseList expenses={expenses} onDelete={onDelete} />
+      <ExpenseFilter onSelectedCategory={onSelectedCategory} />
+      <ExpenseList expenses={visibleExpenses} onDelete={onDelete} />
     </div>
   );
 }
