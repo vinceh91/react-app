@@ -1,13 +1,8 @@
 import { useState } from "react";
-import Button from "./components/Button/Button";
-import DismissingAlert from "./components/DismissingAlert";
-import Like from "./components/Like";
-import Form from "./components/Form";
+
 import ExpenseList from "./expense-tracker/components/ExpenseList";
-import { Expense } from "./expense-tracker/components/ExpenseList";
 import ExpenseFilter from "./expense-tracker/components/ExpenseFilter";
 import ExpenseForm from "./expense-tracker/components/ExpenseForm";
-export const categories = ["Food", "Tech", "Home", "Groceries"];
 
 function App() {
   const [category, setCategory] = useState("");
