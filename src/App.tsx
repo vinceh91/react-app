@@ -1,38 +1,57 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios, { CanceledError } from "axios";
 
-import ExpenseList from "./expense-tracker/components/ExpenseList";
-import ExpenseFilter from "./expense-tracker/components/ExpenseFilter";
-import ExpenseForm from "./expense-tracker/components/ExpenseForm";
+interface User {
+  id: number;
+  name: string;
+}
 
 function App() {
-  const [category, setCategory] = useState("");
-  const [expenses, setExpenses] = useState([
-    { id: 1, description: "Burger", amount: 10, category: "Food" },
-    { id: 2, description: "Phone", amount: 10, category: "Tech" },
-    { id: 3, description: "Table", amount: 10, category: "Home" },
-  ]);
-  const onDelete = (id: number) => {
-    setExpenses(expenses.filter((expense) => expense.id !== id));
-  };
-  const onSelectedCategory = (category: string) => setCategory(category);
-  const visibleExpenses = category
-    ? expenses.filter((e) => e.category === category)
-    : expenses;
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    axios
+      .get<User[]>("https://jsonplaceholder.typicode.com/users", {
+        signal: controller.signal,
+      })
+      .then((res) => setUsers(res.data))
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setError(err.message);
+      });
+    return () => controller.abort();
+  }, []);
 
+  function deleteUser(id: number) {
+    const originalUsers = users;
+    setUsers(users.filter((user) => user.id != id));
+
+    axios
+      .delete("https://jsonplaceholder.typicode.com/xusers/" + id)
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  }
   return (
-    <div>
-      <div className="mb-3">
-        <ExpenseForm
-          onSubmit={(expense) =>
-            setExpenses([...expenses, { ...expense, id: expenses.length + 1 }])
-          }
-        />
-      </div>
-      <div className="mb-3">
-        <ExpenseFilter onSelectedCategory={onSelectedCategory} />
-      </div>
-      <ExpenseList expenses={visibleExpenses} onDelete={onDelete} />
-    </div>
+    <>
+      {error && <p className="text-danger">{error}</p>}
+      <ul>
+        {users.map((user) => (
+          <li key={user.id} className="">
+            {user.name}
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => deleteUser(user.id)}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
+
 export default App;
